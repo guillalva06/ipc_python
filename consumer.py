@@ -6,7 +6,7 @@ from listenerdaemon import listenerDaemon
 print('Consumer Client')
 
 orders_queue = posix_ipc.MessageQueue('/my_orders_queue')
-answers_queue = posix_ipc.MessageQueue('/my_answers2_queue')
+answers_queue = posix_ipc.MessageQueue('/my_answers_queue')
 async_queue = posix_ipc.MessageQueue('/my_async_queue')
 listener = listenerQueue(answers_queue)
 listener.start()
@@ -15,9 +15,10 @@ listenerdaemon.start()
 send_data = True
 while send_data:
 	data = stdin.readline().strip()
-	orders_queue.send(data)
+	orders_queue.send(data+'\0')
 	if data=='EXIT':
 		send_data = False
+print('Exit Consumer Client')
 
 
 	

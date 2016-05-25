@@ -13,7 +13,7 @@ class automaticDetection(threading.Thread):
 	def run(self):
 		cont = 0
 		print ('RUN Daemon')
-		while cont < 3:
+		while cont < 1:
 			self.lock.acquire()
 			cap = cv2.VideoCapture(0)
 			cont = cont + 1

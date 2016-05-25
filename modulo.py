@@ -13,7 +13,7 @@ for line in config_file:
 deteccion = __import__(import_modules['deteccion'])
 distancia = __import__(import_modules['distancia'])
 orders_queue = posix_ipc.MessageQueue('/my_orders_queue', posix_ipc.O_CREAT)
-answers_queue = posix_ipc.MessageQueue('/my_answers2_queue', posix_ipc.O_CREAT)
+answers_queue = posix_ipc.MessageQueue('/my_answers_queue', posix_ipc.O_CREAT)
 async_queue = posix_ipc.MessageQueue('/my_async_queue', posix_ipc.O_CREAT)
 lock = threading.Lock()
 daemon = automaticDetection('Daemon',async_queue,lock)
@@ -21,17 +21,18 @@ daemon.start()
 wait_data = True
 while(wait_data):
 	receive, _ = orders_queue.receive()
-	receive = receive.strip()
-	if receive == 'DETECCION':
+	receive = receive.replace('\n','').strip()
+	print('Recibido: '+ receive)
+	if receive == 'DETECCION\0':
 		answer = deteccion.message()
 		answers_queue.send(answer)
-	elif receive == 'DISTANCIA':
+	elif receive == 'DISTANCIA\0':
 		answer = distancia.message()
 		answers_queue.send(answer)
-	elif receive == 'EXIT':
+	elif receive == 'EXIT\0':
 		wait_data = False
 		answers_queue.send(receive)
-	elif receive == 'A':
+	elif receive == 'A\0':
 		lock.acquire()
 		cap = cv2.VideoCapture(0)
 		while(True):

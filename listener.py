@@ -11,7 +11,7 @@ class listenerQueue(threading.Thread):
 		while self.running:
 			answer, _ = self.queue.receive()
 			print('Answer Receive '+ answer)
-			if answer == 'EXIT':
+			if answer == 'EXIT\0':
 				self.running = False
 		self.queue.close()
 		self.queue.unlink()
