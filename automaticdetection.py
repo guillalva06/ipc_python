@@ -13,6 +13,7 @@ class automaticDetection(threading.Thread):
 	def run(self):
 		cont = 0
 		print ('RUN Daemon')
+		self.queue.send('First Message Daemon');
 		while cont < 1:
 			self.lock.acquire()
 			cap = cv2.VideoCapture(0)
@@ -31,5 +32,5 @@ class automaticDetection(threading.Thread):
 			cv2.destroyAllWindows()
 			self.lock.release()
 			time.sleep(2)
-		self.queue.send('EXIT')
+		self.queue.send('EXIT\0')
 		print ('EXIT Daemon')

@@ -12,11 +12,12 @@ for line in config_file:
 	import_modules[data[0]] = data[1]
 deteccion = __import__(import_modules['deteccion'])
 distancia = __import__(import_modules['distancia'])
-orders_queue = posix_ipc.MessageQueue('/my_orders_queue', posix_ipc.O_CREAT)
-answers_queue = posix_ipc.MessageQueue('/my_answers_queue', posix_ipc.O_CREAT)
-async_queue = posix_ipc.MessageQueue('/my_async_queue', posix_ipc.O_CREAT)
+orders_queue = posix_ipc.MessageQueue('/my_orders_queue')
+answers_queue = posix_ipc.MessageQueue('/my_answers_queue')
+async_queue = posix_ipc.MessageQueue('/my_async_queue')
 lock = threading.Lock()
 daemon = automaticDetection('Daemon',async_queue,lock)
+answers_queue.send('First Answer Message')
 daemon.start()
 wait_data = True
 while(wait_data):
@@ -24,10 +25,10 @@ while(wait_data):
 	receive = receive.replace('\n','').strip()
 	print('Recibido: '+ receive)
 	if receive == 'DETECCION\0':
-		answer = deteccion.message()
+		answer = deteccion.message()+'\0'
 		answers_queue.send(answer)
 	elif receive == 'DISTANCIA\0':
-		answer = distancia.message()
+		answer = distancia.message()+'\0'
 		answers_queue.send(answer)
 	elif receive == 'EXIT\0':
 		wait_data = False
@@ -52,7 +53,9 @@ while(wait_data):
 		print('No es una opcion valida')
 print('Exit main module')
 orders_queue.close()
-orders_queue.unlink()
+async_queue.close()
+answers_queue.close()
+#orders_queue.unlink()
 
 	
 
