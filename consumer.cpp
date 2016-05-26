@@ -81,7 +81,7 @@ int main(){
 	i = 102;
 	pthread_create(&listener_async, NULL, listener2, (void *)i);	
 	printf("Entrada Thread Principal\n");
-	mq_send(orders_queue, "First Order Send\", 100, 0);
+	mq_send(orders_queue, "First Order Send\0", 17, 0);
 	do{		
 		memset(buffer, ' ', 100);
 		fgets(buffer, 100, stdin);
