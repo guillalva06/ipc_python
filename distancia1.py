@@ -1,2 +1,2 @@
-def message():
-	return 'Distancia implementado 1'
+def estimate_distance(camera):
+	return -1.0
